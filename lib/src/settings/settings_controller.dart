@@ -1,3 +1,4 @@
+import 'package:cross_sync/src/syncthing/syncthing_client.dart';
 import 'package:flutter/material.dart';
 
 import 'settings_service.dart';
@@ -8,23 +9,27 @@ import 'settings_service.dart';
 /// Controllers glue Data Services to Flutter Widgets. The SettingsController
 /// uses the SettingsService to store and retrieve user settings.
 class SettingsController with ChangeNotifier {
-  SettingsController(this._settingsService);
+  SettingsController(this._settingsService, this._syncthingClient);
 
   // Make SettingsService a private variable so it is not used directly.
   final SettingsService _settingsService;
+  final SyncthingClient _syncthingClient;
 
   // Make ThemeMode a private variable so it is not updated directly without
   // also persisting the changes with the SettingsService.
   late ThemeMode _themeMode;
+  late String _deviceId;
 
   // Allow Widgets to read the user's preferred ThemeMode.
   ThemeMode get themeMode => _themeMode;
+  String get deviceId => _deviceId;
 
   /// Load the user's settings from the SettingsService. It may load from a
   /// local database or the internet. The controller only knows it can load the
   /// settings from the service.
   Future<void> loadSettings() async {
     _themeMode = await _settingsService.themeMode();
+    _deviceId = await _syncthingClient.deviceId();
 
     // Important! Inform listeners a change has occurred.
     notifyListeners();
