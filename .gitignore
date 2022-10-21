@@ -47,3 +47,4 @@ app.*.map.json
 /android/app/release
 lib/src/syncthing/syncthing.a
 lib/src/syncthing/syncthing.h
+.vscode/settings.json
